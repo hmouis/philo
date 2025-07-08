@@ -43,8 +43,13 @@ int full_philos(t_table *table)
 	i = 0;
 	while (i < table->number_of_philos)
 	{
+		pthread_mutex_lock(table->philo[i].full_philo);
 		if (!table->philo[i].full)
+		{
+			pthread_mutex_unlock(table->philo[i].full_philo);
 			return (0);
+		}
+		pthread_mutex_unlock(table->philo[i].full_philo);
 		i++;
 	}
 	return (1);
@@ -70,24 +75,40 @@ void take_forks(t_philo *philo)
 	{
 		pthread_mutex_lock(philo->l_fork);
 		if (check_dead(philo->table))
+		{
+			pthread_mutex_unlock(philo->l_fork);
 			return ;
+		}
 		printf("%zu %zu has taken a fork\n", get_current_time() - philo->table->start_time, philo->id);
 		pthread_mutex_lock(philo->r_fork);
 		if (check_dead(philo->table))
+		{
+			pthread_mutex_unlock(philo->r_fork);
+			pthread_mutex_unlock(philo->l_fork);
 			return ;
+		}
 		printf("%zu %zu has taken a fork\n", get_current_time() - philo->table->start_time, philo->id);
 	}
 	else
 	{
 		pthread_mutex_lock(philo->r_fork);
 		if (check_dead(philo->table))
+		{
+			pthread_mutex_unlock(philo->r_fork);
 			return ;
+		}
 		printf("%zu %zu has taken a fork\n", get_current_time() - philo->table->start_time, philo->id);
 		pthread_mutex_lock(philo->l_fork);
 		if (check_dead(philo->table))
+		{
+			pthread_mutex_unlock(philo->r_fork);
+			pthread_mutex_unlock(philo->l_fork);
 			return ;
+		}
 		printf("%zu %zu has taken a fork\n", get_current_time() - philo->table->start_time, philo->id);
 	}
+	get_last_meals_time(philo);
+	print_status(philo, "eating", 2);
 }
 
 void count_meals_eating(t_philo *philo)
@@ -100,7 +121,6 @@ void count_meals_eating(t_philo *philo)
 void get_last_meals_time(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->lock_time);
-	// printf("philo id = [%zu] last meal --------- = %zu\n",philo->id, get_current_time() - philo->last_meal);
 	philo->last_meal = get_current_time();
 	pthread_mutex_unlock(&philo->lock_time);
 }
@@ -114,6 +134,7 @@ void print_status(t_philo *philo, char *status, int flag)
 		return ;
 	}
 	pthread_mutex_unlock(&philo->table->dead_lock);
+
 	pthread_mutex_lock(philo->write_lock);
 	printf("%zu %zu is %s\n", get_current_time() - philo->table->start_time, philo->id, status);
 	pthread_mutex_unlock(philo->write_lock);

@@ -4,7 +4,7 @@ SRC = main.c pars.c utils.c philo.c
 OBJ = $(SRC:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=thread -pthread 
+CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=thread 
  
 all: $(NAME)
 

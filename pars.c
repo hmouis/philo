@@ -19,12 +19,14 @@ int ft_atoi_pars(char *str)
 
 	i = 0;
 	result = 0;
+	while (str[i] && (str[i] == 30 || (str[i] >= 9 && str[i] <= 13)))
+		i++;
 	while (str[i] && str[i] >= '0' && str[i] <= '9')
 	{
-		if (result > (SIZE_MAX - (str[i] - '0')) / 10)
-			return (0);
 		result = result * 10 + (str[i] - '0');
 		i++;
+		if (result > INT_MAX)
+			return (0);
 	}
 	if (str[i] != '\0' || !i)
 		return (0);

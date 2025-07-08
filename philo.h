@@ -37,6 +37,7 @@ typedef struct s_philo
 	pthread_mutex_t *write_lock;
 	pthread_mutex_t *lock;
 	pthread_mutex_t *var_lock;
+	pthread_mutex_t *full_philo;
 	t_table *table;
 }				t_philo;
 
@@ -49,7 +50,7 @@ typedef struct s_table
 	size_t time_to_eat;
 	size_t start_time;
 	pthread_t *all_thread;
-	pthread_t t_th;
+	pthread_t *t_th;
 	bool meals;
 	bool is_dead;
 	pthread_mutex_t *forks;
@@ -57,6 +58,7 @@ typedef struct s_table
 	pthread_mutex_t lock;
 	pthread_mutex_t var_lock;
 	pthread_mutex_t t_var_lock;
+	pthread_mutex_t full_philo;
 	pthread_mutex_t dead_lock;
 	t_philo *philo;
 }			t_table;

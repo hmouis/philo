@@ -72,8 +72,11 @@ void	*track_philos(void *data)
 		}
 		if (table->is_dead == true)
 		{
+			pthread_mutex_lock(table->philo->var_lock);
+			last_meal = table->philo[i].last_meal;
+			pthread_mutex_unlock(table->philo->var_lock);
 			pthread_mutex_lock(&table->lock);	
-			printf("%zu %zu is dead\n", get_current_time() - table->philo[i].last_meal, table->philo[i].id);
+			printf("%zu %zu is dead\n", get_current_time() - last_meal, table->philo[i].id);
 			pthread_mutex_unlock(&table->lock);	
 			break;
 		}

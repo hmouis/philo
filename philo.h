@@ -72,6 +72,13 @@ void init_philos(t_table *table, char **av);
 void *dinner(void *data);
 
 
+void print_status(t_philo *philo, char *status, int flag);
+int full_philos(t_table *table);
+int check_dead(t_table *table);
+void ft_usleep(size_t milliseconds);
+void take_forks(t_philo *philo);
+void count_meals_eating(t_philo *philo);
+void get_last_meals_time(t_philo *philo);
 
 
 # endif

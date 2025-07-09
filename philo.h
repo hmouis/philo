@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:29:37 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/09 02:01:35 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/09 15:34:27 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,14 @@ typedef struct s_table
 	t_philo				*philo;
 }						t_table;
 
+void					free_all(t_table *table);
 void					print_status(t_philo *philo, char *status, int flag);
 int						full_philos(t_table *table);
 void					*track_philos(void *data);
 size_t					get_current_time(void);
 int						pars_args(int ac, char **av);
 size_t					ft_atoi(char *str);
-void					init_philos(t_table *table, char **av);
+int						init_philos(t_table *table, char **av);
 void					*dinner(void *data);
 void					ft_printf(t_philo *philo, char *str);
 void					print_status(t_philo *philo, char *status, int flag);

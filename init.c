@@ -6,13 +6,13 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 01:39:45 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/09 01:46:36 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/09 15:43:12 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	init_args(t_table *table, char **av)
+int	init_args(t_table *table, char **av)
 {
 	table->number_of_philos = ft_atoi(av[1]);
 	table->time_to_die = ft_atoi(av[2]);
@@ -22,6 +22,8 @@ void	init_args(t_table *table, char **av)
 	{
 		table->meals = true;
 		table->number_of_meals = ft_atoi(av[5]);
+		if (table->number_of_meals == 0)
+			return (0);
 	}
 	else
 	{
@@ -29,14 +31,17 @@ void	init_args(t_table *table, char **av)
 		table->meals = false;
 	}
 	table->is_dead = false;
+	return (1);
 }
 
-void	init_mutex(t_table *table)
+int	init_mutex(t_table *table)
 {
 	size_t	i;
 
 	i = 0;
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->number_of_philos);
+	if (!table->forks)
+		return (0);
 	while (i < table->number_of_philos)
 	{
 		pthread_mutex_init(&table->forks[i], NULL);
@@ -49,6 +54,7 @@ void	init_mutex(t_table *table)
 	pthread_mutex_init(&table->dead_lock, NULL);
 	pthread_mutex_init(&table->full_philo, NULL);
 	pthread_mutex_init(&table->print_mutex, NULL);
+	return (1);
 }
 
 void	init_philo_struct(t_table *table)
@@ -75,31 +81,56 @@ void	init_philo_struct(t_table *table)
 	}
 }
 
-void	init_philos(t_table *table, char **av)
+void	free_all(t_table *table)
+{
+	if (table->philo)
+		free(table->philo);
+	if (table->all_thread)
+		free(table->all_thread);
+	if (table->t_th)
+		free(table->t_th);
+	if (table->forks)
+		free(table->forks);
+}
+
+int	init_philos(t_table *table, char **av)
 {
 	size_t	i;
 
 	i = 0;
-	init_args(table, av);
+	if (!init_args(table, av))
+		return (0);
 	init_mutex(table);
 	i = 0;
 	table->start_time = get_current_time();
 	table->philo = malloc(sizeof(t_philo) * table->number_of_philos);
+	if (!table->philo)
+		return (0);
 	table->all_thread = malloc(sizeof(pthread_t) * table->number_of_philos);
+	if (!table->all_thread)
+		return (0);
 	table->t_th = malloc(sizeof(pthread_t) * 1);
+	if (!table->t_th)
+		return (0);
 	init_philo_struct(table);
 	i = 0;
 	while (i < table->number_of_philos)
 	{
-		pthread_create(&table->all_thread[i], NULL, dinner, &table->philo[i]);
+		if (pthread_create(&table->all_thread[i], NULL, dinner,
+				&table->philo[i]))
+			return (0);
 		i++;
 	}
-	pthread_create(&table->t_th[0], NULL, track_philos, table);
+	if (pthread_create(&table->t_th[0], NULL, track_philos, table))
+		return (0);
 	i = 0;
 	while (i < table->number_of_philos)
 	{
-		pthread_join(table->all_thread[i], NULL);
+		if (pthread_join(table->all_thread[i], NULL))
+			return (0);
 		i++;
 	}
-	pthread_join(table->t_th[0], NULL);
+	if (pthread_join(table->t_th[0], NULL))
+		return (0);
+	return (1);
 }

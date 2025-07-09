@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:19:11 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/09 02:01:04 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/09 16:04:57 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	ft_usleep(size_t milliseconds)
 	size_t	start;
 
 	start = get_current_time();
-	while (get_current_time() - start <= milliseconds)
+	while (get_current_time() - start < milliseconds)
 		usleep(100);
 }
 

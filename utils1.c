@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 01:37:36 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/09 01:38:07 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/09 15:53:31 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,11 @@ void	ft_printf(t_philo *philo, char *status)
 		stop_printing = 1;
 	pthread_mutex_unlock(&philo->table->dead_lock);
 	pthread_mutex_lock(philo->write_lock);
+	pthread_mutex_lock(&philo->table->dead_lock);
 	if (!stop_printing)
 		printf("%zu %zu %s\n", get_current_time() - philo->table->start_time,
 			philo->id, status);
+	pthread_mutex_unlock(&philo->table->dead_lock);
 	pthread_mutex_unlock(philo->write_lock);
 }
 

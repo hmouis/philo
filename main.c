@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:38:11 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/09 02:04:34 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/09 15:38:19 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,11 @@ int	main(int ac, char **av)
 		printf("Error: Invalide args\n");
 	else
 	{
-		init_philos(&table, av);
+		if (!init_philos(&table, av))
+		{
+			free_all(&table);
+			return (0);
+		}
 		free(table.forks);
 		free(table.philo);
 		free(table.all_thread);

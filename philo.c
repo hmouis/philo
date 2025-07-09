@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:11:47 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/09 02:01:21 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/09 14:46:24 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,9 @@ void	*dinner(void *data)
 			break ;
 		print_status(philo, "is thinking", 0);
 		take_forks(philo);
+		count_meals_eating(philo);
 		if (check_meals_count(philo))
 			break ;
-		count_meals_eating(philo);
 		print_status(philo, "is sleeping", 1);
 	}
 	return (NULL);

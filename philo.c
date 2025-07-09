@@ -26,15 +26,6 @@ void	*track_philos(void *data)
 		i = 0;
 		while(i < table->number_of_philos)
 		{
-			pthread_mutex_lock(&table->t_var_lock);
-			if (table->philo[i].count_meals == 0)
-			{
-				pthread_mutex_unlock(&table->t_var_lock);
-				i++;
-				continue;
-			}
-			pthread_mutex_unlock(&table->t_var_lock);
-
 			pthread_mutex_lock(&table->philo[i].lock_time);
 			last_meal = table->philo[i].last_meal;
 			pthread_mutex_unlock(&table->philo[i].lock_time);
@@ -56,6 +47,7 @@ void	*track_philos(void *data)
 			pthread_mutex_unlock(&table->write_lock);
 			break;
 		}
+		usleep(200);
 	}
 	return (NULL);
 }
@@ -88,10 +80,10 @@ void *dinner(void *data)
 			break ;
 		if (check_meals_count(philo))
 			break;
-		print_status(philo, "thinking", 0);
+		print_status(philo, "is thinking", 0);
 		take_forks(philo);
 		count_meals_eating(philo);
-		print_status(philo, "sleeping", 1);
+		print_status(philo, "is sleeping", 1);
 	}
 	return (NULL);
 }
@@ -117,14 +109,18 @@ void init_philos(t_table *table, char **av)
 	}
 	table->is_dead = false;
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->number_of_philos);
-	while (i++ < table->number_of_philos)
+	while (i < table->number_of_philos)
+	{
 		pthread_mutex_init(&table->forks[i], NULL);
+		i++;
+	}
 	pthread_mutex_init(&table->lock, NULL);
 	pthread_mutex_init(&table->write_lock, NULL);
 	pthread_mutex_init(&table->var_lock, NULL);
 	pthread_mutex_init(&table->t_var_lock, NULL);
 	pthread_mutex_init(&table->dead_lock, NULL);
 	pthread_mutex_init(&table->full_philo, NULL);
+	pthread_mutex_init(&table->print_mutex, NULL);
 	i = 0;
 	table->start_time = get_current_time();
 	table->philo = malloc(sizeof(t_philo) * table->number_of_philos);

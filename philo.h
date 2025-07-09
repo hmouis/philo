@@ -60,6 +60,7 @@ typedef struct s_table
 	pthread_mutex_t t_var_lock;
 	pthread_mutex_t full_philo;
 	pthread_mutex_t dead_lock;
+	pthread_mutex_t print_mutex;
 	t_philo *philo;
 }			t_table;
 
@@ -72,8 +73,7 @@ int pars_args(int ac, char **av);
 size_t ft_atoi(char *str);
 void init_philos(t_table *table, char **av);
 void *dinner(void *data);
-
-
+void ft_printf(t_philo *philo, char *str);
 void print_status(t_philo *philo, char *status, int flag);
 int full_philos(t_table *table);
 int check_dead(t_table *table);

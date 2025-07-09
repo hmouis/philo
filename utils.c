@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:19:11 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/09 01:38:01 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/09 02:01:04 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,15 @@ int	check_dead(t_table *table)
 		return (1);
 	}
 	pthread_mutex_unlock(&table->dead_lock);
+	return (0);
+}
+
+int	is_dead(t_table *table, size_t last_meal, size_t i)
+{
+	if (check_dead(table))
+	{
+		print_is_dead(table, last_meal, i);
+		return (1);
+	}
 	return (0);
 }

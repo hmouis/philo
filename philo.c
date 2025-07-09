@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:11:47 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/09 01:40:15 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/09 02:01:21 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,15 @@ void	*track_philos(void *data)
 		i = 0;
 		while (i < table->number_of_philos)
 		{
+			if (full_philos(table))
+				break ;
 			if (!philo_status(table, &i, &last_meal))
 				break ;
 		}
-		if (check_dead(table))
-		{
-			print_is_dead(table, last_meal, i);
+		if (full_philos(table))
 			break ;
-		}
+		if (is_dead(table, last_meal, i))
+			break ;
 		usleep(200);
 	}
 	return (NULL);
@@ -90,10 +91,10 @@ void	*dinner(void *data)
 	{
 		if (check_dead(philo->table))
 			break ;
-		if (check_meals_count(philo))
-			break ;
 		print_status(philo, "is thinking", 0);
 		take_forks(philo);
+		if (check_meals_count(philo))
+			break ;
 		count_meals_eating(philo);
 		print_status(philo, "is sleeping", 1);
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmouis <hmouis@1337.ma>                    +#+  +:+       +#+        */
+/*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:29:37 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/03 15:47:51 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/09 02:01:35 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,5 +80,8 @@ void					ft_usleep(size_t milliseconds);
 void					take_forks(t_philo *philo);
 void					count_meals_eating(t_philo *philo);
 void					get_last_meals_time(t_philo *philo);
+int						is_dead(t_table *table, size_t last_meal, size_t i);
+void					print_is_dead(t_table *table, size_t last_meal,
+							size_t i);
 
 #endif

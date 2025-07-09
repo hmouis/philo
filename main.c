@@ -12,9 +12,9 @@
 
 #include "philo.h"
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-	t_table table;
+	t_table	table;
 
 	if (!pars_args(ac, av))
 		printf("Error: Invalide args\n");

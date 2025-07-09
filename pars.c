@@ -12,10 +12,10 @@
 
 #include "philo.h"
 
-int ft_atoi_pars(char *str)
+int	ft_atoi_pars(char *str)
 {
-	int i;
-	size_t result;
+	int		i;
+	size_t	result;
 
 	i = 0;
 	result = 0;
@@ -33,9 +33,9 @@ int ft_atoi_pars(char *str)
 	return (1);
 }
 
-int pars_args(int ac, char **av)
+int	pars_args(int ac, char **av)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	if (ac != 5 && ac != 6)
@@ -57,4 +57,3 @@ size_t	get_current_time(void)
 		write(2, "gettimeofday() error\n", 22);
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
-

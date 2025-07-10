@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:11:47 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/10 00:58:15 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/10 16:39:24 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@ int	philo_status(t_table *table, size_t *i, size_t *last_meal)
 	pthread_mutex_lock(&table->philo[*i].lock_time);
 	*last_meal = table->philo[*i].last_meal;
 	pthread_mutex_unlock(&table->philo[*i].lock_time);
-	if (full_philos(table))
-		return (0);
-	if (get_current_time() - *last_meal > table->time_to_die)
+	if (get_current_time() - *last_meal >= table->time_to_die)
 	{
 		pthread_mutex_lock(&table->dead_lock);
 		table->is_dead = true;
@@ -53,14 +51,13 @@ void	*track_philos(void *data)
 		while (i < table->number_of_philos)
 		{
 			if (full_philos(table))
-				break ;
+				return (NULL);
 			if (!philo_status(table, &i, &last_meal))
-				break ;
+			{
+				print_is_dead(table, last_meal, i);
+				return (NULL);
+			}
 		}
-		if (full_philos(table))
-			break ;
-		if (is_dead(table, last_meal, i))
-			break ;
 		usleep(200);
 	}
 	return (NULL);
@@ -89,20 +86,19 @@ void	*dinner(void *data)
 	philo = (t_philo *)data;
 	while (1)
 	{
-		if (check_dead(philo->table))
-			break ;
+		pthread_mutex_lock(&philo->table->dead_lock);
+		if (philo->table->is_dead)
+		{
+			pthread_mutex_unlock(&philo->table->dead_lock);
+			break;
+		}
+		pthread_mutex_unlock(&philo->table->dead_lock);
 		print_status(philo, "is thinking", 0);
-		if (check_dead(philo->table))
-			break ;
 		take_forks(philo);
-		if (check_dead(philo->table))
-			break ;
 		count_meals_eating(philo);
 		if (check_meals_count(philo))
 			break ;
 		print_status(philo, "is sleeping", 1);
-		if (check_meals_count(philo))
-			break ;
 		usleep(200);
 	}
 	return (NULL);

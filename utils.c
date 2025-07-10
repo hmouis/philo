@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:19:11 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/10 00:41:58 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/10 16:40:30 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,26 +53,4 @@ int	full_philos(t_table *table)
 		i++;
 	}
 	return (1);
-}
-
-int	check_dead(t_table *table)
-{
-	pthread_mutex_lock(&table->dead_lock);
-	if (table->is_dead)
-	{
-		pthread_mutex_unlock(&table->dead_lock);
-		return (1);
-	}
-	pthread_mutex_unlock(&table->dead_lock);
-	return (0);
-}
-
-int	is_dead(t_table *table, size_t last_meal, size_t i)
-{
-	if (check_dead(table))
-	{
-		print_is_dead(table, last_meal, i);
-		return (1);
-	}
-	return (0);
 }

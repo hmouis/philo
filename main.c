@@ -26,10 +26,10 @@ int	main(int ac, char **av)
 			return (0);
 		}
 		free_all(&table);
-		pthread_mutex_destroy(&table.write_lock);	
-		pthread_mutex_destroy(&table.lock);	
-		pthread_mutex_destroy(&table.var_lock);	
-		pthread_mutex_destroy(&table.t_var_lock);	
+		pthread_mutex_destroy(&table.write_lock);
+		pthread_mutex_destroy(&table.lock);
+		pthread_mutex_destroy(&table.var_lock);
+		pthread_mutex_destroy(&table.t_var_lock);
 		pthread_mutex_destroy(&table.dead_lock);
 		pthread_mutex_destroy(&table.full_philo);
 		pthread_mutex_destroy(&table.print_mutex);

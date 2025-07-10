@@ -94,21 +94,23 @@ void	free_all(t_table *table)
 		free(table->forks);
 }
 
-void *philo_one(void *data)
+void	*philo_one(void *data)
 {
-	t_philo *philo;
-	
+	t_philo	*philo;
+
 	philo = (t_philo *)data;
-	printf("%zu 1 has taken a fork\n", philo->last_meal - philo->table->start_time);
+	printf("%zu 1 has taken a fork\n", philo->last_meal
+		- philo->table->start_time);
 	ft_usleep(philo->table->time_to_die);
 	philo->last_meal = get_current_time();
 	printf("%zu 1 is dead\n", philo->last_meal - philo->table->start_time);
 	return (NULL);
 }
 
-void one_philo(t_table *table)
+void	one_philo(t_table *table)
 {
-	if (pthread_create(&table->all_thread[0], NULL, philo_one, &table->philo[0]))
+	if (pthread_create(&table->all_thread[0], NULL, philo_one,
+			&table->philo[0]))
 		return ;
 	if (pthread_join(table->all_thread[0], NULL))
 		return ;

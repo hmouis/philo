@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:11:47 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/09 15:13:28 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/10 00:58:15 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,18 @@ void	*dinner(void *data)
 		if (check_dead(philo->table))
 			break ;
 		print_status(philo, "is thinking", 0);
+		if (check_dead(philo->table))
+			break ;
 		take_forks(philo);
+		if (check_dead(philo->table))
+			break ;
 		count_meals_eating(philo);
 		if (check_meals_count(philo))
 			break ;
 		print_status(philo, "is sleeping", 1);
+		if (check_meals_count(philo))
+			break ;
+		usleep(200);
 	}
 	return (NULL);
 }

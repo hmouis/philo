@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 01:39:45 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/09 15:43:12 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/10 01:27:21 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,9 @@ void	init_philo_struct(t_table *table)
 	{
 		table->philo[i].id = i + 1;
 		table->philo[i].r_fork = &table->forks[i];
-		table->philo[i].l_fork = &table->forks[(i + 1)
-			% table->number_of_philos];
+		if (table->number_of_philos > 1)
+			table->philo[i].l_fork = &table->forks[(i + 1)
+				% table->number_of_philos];
 		table->philo[i].count_meals = 0;
 		table->philo[i].table = table;
 		table->philo[i].full = false;
@@ -93,13 +94,33 @@ void	free_all(t_table *table)
 		free(table->forks);
 }
 
+void *philo_one(void *data)
+{
+	t_philo *philo;
+	
+	philo = (t_philo *)data;
+	printf("%zu 1 has taken a fork\n", philo->last_meal - philo->table->start_time);
+	ft_usleep(philo->table->time_to_die);
+	philo->last_meal = get_current_time();
+	printf("%zu 1 is dead\n", philo->last_meal - philo->table->start_time);
+	return (NULL);
+}
+
+void one_philo(t_table *table)
+{
+	if (pthread_create(&table->all_thread[0], NULL, philo_one, &table->philo[0]))
+		return ;
+	if (pthread_join(table->all_thread[0], NULL))
+		return ;
+}
+
 int	init_philos(t_table *table, char **av)
 {
 	size_t	i;
 
 	i = 0;
 	if (!init_args(table, av))
-		return (0);
+		return (2);
 	init_mutex(table);
 	i = 0;
 	table->start_time = get_current_time();
@@ -114,6 +135,13 @@ int	init_philos(t_table *table, char **av)
 		return (0);
 	init_philo_struct(table);
 	i = 0;
+	if (table->number_of_philos == 1)
+	{
+		one_philo(table);
+		return (1);
+	}
+	if (pthread_create(&table->t_th[0], NULL, track_philos, table))
+		return (0);
 	while (i < table->number_of_philos)
 	{
 		if (pthread_create(&table->all_thread[i], NULL, dinner,
@@ -121,8 +149,6 @@ int	init_philos(t_table *table, char **av)
 			return (0);
 		i++;
 	}
-	if (pthread_create(&table->t_th[0], NULL, track_philos, table))
-		return (0);
 	i = 0;
 	while (i < table->number_of_philos)
 	{

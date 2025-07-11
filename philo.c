@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:11:47 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/10 23:47:03 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/11 15:38:15 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	philo_status(t_table *table, size_t *i, size_t *last_meal)
 	pthread_mutex_lock(&table->philo[*i].lock_time);
 	*last_meal = table->philo[*i].last_meal;
 	pthread_mutex_unlock(&table->philo[*i].lock_time);
-	if (get_current_time() - *last_meal >= table->time_to_die)
+	if (get_current_time() - *last_meal > table->time_to_die)
 	{
 		pthread_mutex_lock(&table->dead_lock);
 		table->is_dead = true;
@@ -28,10 +28,10 @@ int	philo_status(t_table *table, size_t *i, size_t *last_meal)
 	return (1);
 }
 
-void	print_is_dead(t_table *table, size_t last_meal, size_t i)
+void	print_is_dead(t_table *table, size_t i)
 {
 	pthread_mutex_lock(&table->write_lock);
-	printf("%zu %zu is dead\n", get_current_time() - last_meal,
+	printf("%zu %zu is dead\n", get_current_time() - table->start_time,
 		table->philo[i].id);
 	pthread_mutex_unlock(&table->write_lock);
 }
@@ -54,7 +54,7 @@ void	*track_philos(void *data)
 				return (NULL);
 			if (!philo_status(table, &i, &last_meal))
 			{
-				print_is_dead(table, last_meal, i);
+				print_is_dead(table, i);
 				return (NULL);
 			}
 		}

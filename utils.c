@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:19:11 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/10 16:40:30 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/10 23:39:39 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,26 @@ int	full_philos(t_table *table)
 		i++;
 	}
 	return (1);
+}
+
+void	*philo_one(void *data)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)data;
+	printf("%zu 1 has taken a fork\n", philo->last_meal
+		- philo->table->start_time);
+	ft_usleep(philo->table->time_to_die);
+	philo->last_meal = get_current_time();
+	printf("%zu 1 is dead\n", philo->last_meal - philo->table->start_time);
+	return (NULL);
+}
+
+void	one_philo(t_table *table)
+{
+	if (pthread_create(&table->all_thread[0], NULL, philo_one,
+			&table->philo[0]))
+		return ;
+	if (pthread_join(table->all_thread[0], NULL))
+		return ;
 }

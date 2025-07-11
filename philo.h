@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:29:37 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/10 17:13:15 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/10 23:40:18 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,7 @@ void					count_meals_eating(t_philo *philo);
 void					get_last_meals_time(t_philo *philo);
 void					print_is_dead(t_table *table, size_t last_meal,
 							size_t i);
+void					*philo_one(void *data);
+void					one_philo(t_table *table);
 
 #endif

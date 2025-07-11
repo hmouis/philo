@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:11:47 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/10 16:39:24 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/10 23:47:03 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ int	philo_status(t_table *table, size_t *i, size_t *last_meal)
 
 void	print_is_dead(t_table *table, size_t last_meal, size_t i)
 {
-	pthread_mutex_lock(&table->dead_lock);
+	pthread_mutex_lock(&table->write_lock);
 	printf("%zu %zu is dead\n", get_current_time() - last_meal,
 		table->philo[i].id);
-	pthread_mutex_unlock(&table->dead_lock);
+	pthread_mutex_unlock(&table->write_lock);
 }
 
 void	*track_philos(void *data)
@@ -84,13 +84,15 @@ void	*dinner(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
+	if (philo->id % 2 == 0)
+		usleep(1000);
 	while (1)
 	{
 		pthread_mutex_lock(&philo->table->dead_lock);
 		if (philo->table->is_dead)
 		{
 			pthread_mutex_unlock(&philo->table->dead_lock);
-			break;
+			break ;
 		}
 		pthread_mutex_unlock(&philo->table->dead_lock);
 		print_status(philo, "is thinking", 0);

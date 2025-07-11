@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 01:37:36 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/10 17:12:02 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/10 23:58:06 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,15 @@
 
 void	take_forks(t_philo *philo)
 {
+	long	time;
+
 	if (philo->table->number_of_philos % 2 && philo->count_meals > 0)
-		ft_usleep((philo->table->time_to_die - philo->table->time_to_eat
-				- philo->table->time_to_sleep) / 2);
+	{
+		time = (philo->table->time_to_die - philo->table->time_to_eat
+				- philo->table->time_to_sleep);
+		if (time > 0)
+			ft_usleep(time / 2);
+	}
 	if (philo->id % 2 == 0)
 	{
 		pthread_mutex_lock(philo->l_fork);
@@ -31,7 +37,6 @@ void	take_forks(t_philo *philo)
 		pthread_mutex_lock(philo->l_fork);
 		ft_printf(philo, "has taken a fork");
 	}
-	get_last_meals_time(philo);
 	print_status(philo, "is eating", 2);
 }
 
@@ -73,6 +78,7 @@ void	print_status(t_philo *philo, char *status, int flag)
 		ft_usleep(philo->table->time_to_sleep);
 	if (flag == 2)
 	{
+		get_last_meals_time(philo);
 		ft_usleep(philo->table->time_to_eat);
 		pthread_mutex_unlock(philo->r_fork);
 		pthread_mutex_unlock(philo->l_fork);

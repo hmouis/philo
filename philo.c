@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:11:47 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/11 15:45:22 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/12 19:45:55 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	*track_philos(void *data)
 				return (NULL);
 			}
 		}
-		usleep(200);
 	}
 	return (NULL);
 }
@@ -86,22 +85,15 @@ void	*dinner(void *data)
 	philo = (t_philo *)data;
 	if (philo->id % 2 == 0)
 		usleep(1000);
-	while (1)
+	while (!is_died(philo))
 	{
-		pthread_mutex_lock(&philo->table->dead_lock);
-		if (philo->table->is_dead)
-		{
-			pthread_mutex_unlock(&philo->table->dead_lock);
-			break ;
-		}
-		pthread_mutex_unlock(&philo->table->dead_lock);
-		print_status(philo, "is thinking", 0);
 		take_forks(philo);
 		count_meals_eating(philo);
 		if (check_meals_count(philo))
-			break ;
+			return (NULL);
 		print_status(philo, "is sleeping", 1);
-		usleep(200);
+		print_status(philo, "is thinking", 0);
+		usleep(50);
 	}
 	return (NULL);
 }

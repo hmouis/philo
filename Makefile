@@ -4,7 +4,7 @@ SRC = main.c pars.c utils.c philo.c utils1.c init.c
 OBJ = $(SRC:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g3 
  
 all: $(NAME)
 

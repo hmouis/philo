@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 15:29:37 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/11 15:37:35 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/12 19:49:08 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ typedef struct s_table
 	t_philo				*philo;
 }						t_table;
 
+int						is_died(t_philo *philo);
 void					free_all(t_table *table);
 void					print_status(t_philo *philo, char *status, int flag);
 int						full_philos(t_table *table);
@@ -80,9 +81,9 @@ void					ft_usleep(size_t milliseconds, t_philo *philo);
 void					take_forks(t_philo *philo);
 void					count_meals_eating(t_philo *philo);
 void					get_last_meals_time(t_philo *philo);
-void					print_is_dead(t_table *table,
-							size_t i);
+void					print_is_dead(t_table *table, size_t i);
 void					*philo_one(void *data);
-void					one_philo(t_table *table);
+int						one_philo(t_table *table);
+int						init_mutex(t_table *table);
 
 #endif

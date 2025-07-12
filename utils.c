@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 14:19:11 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/11 15:48:22 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/12 14:03:30 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,14 @@ void	*philo_one(void *data)
 	return (NULL);
 }
 
-void	one_philo(t_table *table)
+int	one_philo(t_table *table)
 {
+	if (table->number_of_philos != 1)
+		return (0);
 	if (pthread_create(&table->all_thread[0], NULL, philo_one,
 			&table->philo[0]))
-		return ;
+		return (0);
 	if (pthread_join(table->all_thread[0], NULL))
-		return ;
+		return (0);
+	return (1);
 }

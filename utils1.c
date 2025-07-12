@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 01:37:36 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/11 15:48:12 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/12 19:51:07 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	take_forks(t_philo *philo)
 		pthread_mutex_lock(philo->l_fork);
 		ft_printf(philo, "has taken a fork");
 	}
+	get_last_meals_time(philo);
 	print_status(philo, "is eating", 2);
 }
 
@@ -45,13 +46,6 @@ void	count_meals_eating(t_philo *philo)
 	pthread_mutex_lock(&philo->table->t_var_lock);
 	philo->count_meals++;
 	pthread_mutex_unlock(&philo->table->t_var_lock);
-}
-
-void	get_last_meals_time(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->lock_time);
-	philo->last_meal = get_current_time();
-	pthread_mutex_unlock(&philo->lock_time);
 }
 
 void	ft_printf(t_philo *philo, char *status)
@@ -74,13 +68,26 @@ void	ft_printf(t_philo *philo, char *status)
 void	print_status(t_philo *philo, char *status, int flag)
 {
 	ft_printf(philo, status);
+	if (is_died(philo))
+		return ;
 	if (flag == 1)
 		ft_usleep(philo->table->time_to_sleep, philo);
 	if (flag == 2)
 	{
-		get_last_meals_time(philo);
 		ft_usleep(philo->table->time_to_eat, philo);
 		pthread_mutex_unlock(philo->r_fork);
 		pthread_mutex_unlock(philo->l_fork);
 	}
+}
+
+int	is_died(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->table->dead_lock);
+	if (philo->table->is_dead)
+	{
+		pthread_mutex_unlock(&philo->table->dead_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->table->dead_lock);
+	return (0);
 }

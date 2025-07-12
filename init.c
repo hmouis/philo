@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 01:39:45 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/10 23:39:29 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/12 19:50:37 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,32 @@ void	init_philo_struct(t_table *table)
 	}
 }
 
-void	free_all(t_table *table)
+int	creat_threads(t_table *table)
 {
-	if (table->philo)
-		free(table->philo);
-	if (table->all_thread)
-		free(table->all_thread);
-	if (table->t_th)
-		free(table->t_th);
-	if (table->forks)
-		free(table->forks);
+	size_t	i;
+
+	i = 0;
+	if (one_philo(table))
+		return (1);
+	if (pthread_create(&table->t_th[0], NULL, track_philos, table))
+		return (0);
+	while (i < table->number_of_philos)
+	{
+		if (pthread_create(&table->all_thread[i], NULL, dinner,
+				&table->philo[i]))
+			return (0);
+		i++;
+	}
+	i = 0;
+	while (i < table->number_of_philos)
+	{
+		if (pthread_join(table->all_thread[i], NULL))
+			return (0);
+		i++;
+	}
+	if (pthread_join(table->t_th[0], NULL))
+		return (0);
+	return (1);
 }
 
 int	init_philos(t_table *table, char **av)
@@ -115,28 +131,7 @@ int	init_philos(t_table *table, char **av)
 		return (0);
 	init_philo_struct(table);
 	i = 0;
-	if (table->number_of_philos == 1)
-	{
-		one_philo(table);
-		return (1);
-	}
-	if (pthread_create(&table->t_th[0], NULL, track_philos, table))
-		return (0);
-	while (i < table->number_of_philos)
-	{
-		if (pthread_create(&table->all_thread[i], NULL, dinner,
-				&table->philo[i]))
-			return (0);
-		i++;
-	}
-	i = 0;
-	while (i < table->number_of_philos)
-	{
-		if (pthread_join(table->all_thread[i], NULL))
-			return (0);
-		i++;
-	}
-	if (pthread_join(table->t_th[0], NULL))
+	if (!creat_threads(table))
 		return (0);
 	return (1);
 }

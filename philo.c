@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 15:11:47 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/12 19:45:55 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/12 21:48:51 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,17 @@ int	philo_status(t_table *table, size_t *i, size_t *last_meal)
 	pthread_mutex_lock(&table->philo[*i].lock_time);
 	*last_meal = table->philo[*i].last_meal;
 	pthread_mutex_unlock(&table->philo[*i].lock_time);
-	if (get_current_time() - *last_meal > table->time_to_die)
+	pthread_mutex_lock(table->philo[*i].full_philo);
+	if (!table->philo[*i].full && get_current_time()
+		- *last_meal > table->time_to_die)
 	{
+		pthread_mutex_unlock(table->philo[*i].full_philo);
 		pthread_mutex_lock(&table->dead_lock);
 		table->is_dead = true;
 		pthread_mutex_unlock(&table->dead_lock);
 		return (0);
 	}
+	pthread_mutex_unlock(table->philo[*i].full_philo);
 	(*i)++;
 	return (1);
 }
@@ -45,6 +49,8 @@ void	*track_philos(void *data)
 	i = 0;
 	table = (t_table *)data;
 	last_meal = 0;
+	if (table->meals && table->number_of_meals == 0)
+		return (NULL);
 	while (1)
 	{
 		i = 0;
@@ -85,6 +91,8 @@ void	*dinner(void *data)
 	philo = (t_philo *)data;
 	if (philo->id % 2 == 0)
 		usleep(1000);
+	if (philo->table->meals && philo->table->number_of_meals == 0)
+		return (NULL);
 	while (!is_died(philo))
 	{
 		take_forks(philo);

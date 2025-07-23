@@ -6,7 +6,7 @@
 /*   By: hmouis <hmouis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 01:39:45 by hmouis            #+#    #+#             */
-/*   Updated: 2025/07/12 21:52:36 by hmouis           ###   ########.fr       */
+/*   Updated: 2025/07/12 21:57:11 by hmouis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	init_args(t_table *table, char **av)
 {
 	table->number_of_philos = ft_atoi(av[1]);
-	if (table->number_of_meals == 0)
+	if (table->number_of_philos == 0)
 		return (0);
 	table->time_to_die = ft_atoi(av[2]);
 	table->time_to_eat = ft_atoi(av[3]);
@@ -30,7 +30,10 @@ int	init_args(t_table *table, char **av)
 		table->number_of_meals = 0;
 		table->meals = false;
 	}
-	table->is_dead = false;
+	if (table->time_to_die == 0)
+		table->is_dead = true;
+	else
+		table->is_dead = false;
 	return (1);
 }
 
